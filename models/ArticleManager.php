@@ -74,10 +74,11 @@ class ArticleManager extends AbstractEntityManager
      */
     public function updateArticle(Article $article) : void
     {
-        $sql = "UPDATE article SET title = :title, content = :content, date_update = NOW() WHERE id = :id";
+        $sql = "UPDATE article SET title = :title, content = :content, date_update = NOW(), nbr_of_view = :nbrOfView WHERE id = :id";
         $this->db->query($sql, [
             'title' => $article->getTitle(),
             'content' => $article->getContent(),
+            'nbrOfView' => $article->getNbrOfView(),
             'id' => $article->getId()
         ]);
     }
