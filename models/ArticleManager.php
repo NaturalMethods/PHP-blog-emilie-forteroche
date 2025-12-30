@@ -21,6 +21,49 @@ class ArticleManager extends AbstractEntityManager
         return $articles;
     }
 
+    public function getArticlesSortedBy(array $articles, string $action): mixed
+    {
+
+        switch (true) {
+            case preg_match('/^title(asc|desc)$/i', $action, $matches):
+                return $this->sortAlphabeticallyBy($articles, 'getTitle', $matches[1]);
+
+            case preg_match('/^view(asc|desc)$/i', $action, $matches):
+                return $this->sortNumericallyBy($articles, 'getNbrOfView', $matches[1]);
+
+            case preg_match('/^com(asc|desc)$/i', $action, $matches):
+                return $this->sortNumericallyBy($articles, 'getNbrOfComments', $matches[1]);
+
+            case preg_match('/^date(asc|desc)$/i', $action, $matches):
+                return $this->sortNumericallyBy($articles, 'getDateCreation', $matches[1]);
+
+            default:
+                return $articles;
+        }
+    }
+
+    public function sortAlphabeticallyBy(array $articles, string $getter, $order): array
+    {
+        usort($articles, function ($a, $b) use ($getter, $order) {
+            if (!strcasecmp($order, 'Desc'))
+                return strcasecmp($b->$getter(), $a->$getter());
+            else
+                return strcasecmp($a->$getter(), $b->$getter());
+        });
+        return $articles;
+    }
+
+    public function sortNumericallyBy(array $articles, string $getter, $order): array
+    {
+        usort($articles, function ($a, $b) use ($getter, $order) {
+            if (!strcasecmp($order, 'Desc'))
+                return $b->$getter() <=> $a->$getter();
+            else
+                return $a->$getter() <=> $b->$getter();
+        });
+        return $articles;
+    }
+
     /**
      * Récupère un article par son id.
      * @param int $id : l'id de l'article.

@@ -9,12 +9,14 @@
 
 <a class="submit" href="index.php?action=admin">Retour</a>
 
+<h4>Cliquez sur une entête de colonne pour la trier</h4>
+
 <div class="adminArticleMonitoring">
     <div class="articleMonitoringLine">
-        <div class="articleMonitoringCell">Titre de l'article</div>
-        <div class="articleMonitoringCell">Vues</div>
-        <div class="articleMonitoringCell">Commentaires</div>
-        <div class="articleMonitoringCell">Date de création</div>
+        <a class="articleMonitoringCell articleTitleHeader" href="<?= $headerButtons['title']['link']; ?>" >Titre de l'article <h6><?= $headerButtons['title']['text']; ?></h6></a>
+        <a class="articleMonitoringCell articleTitleHeader" href="<?= $headerButtons['views']['link']; ?>" >Vues <h6><?= $headerButtons['views']['text']; ?></h6></a>
+        <a class="articleMonitoringCell articleTitleHeader" href="<?= $headerButtons['comments']['link']; ?>" >Commentaires <h6><?= $headerButtons['comments']['text']; ?></h6></a>
+        <a class="articleMonitoringCell articleTitleHeader" href="<?= $headerButtons['date']['link']; ?>" >Date de création <h6><?= $headerButtons['date']['text']; ?></h6></a>
     </div>
     <?php foreach ($articles as $article) { ?>
         <div class="articleMonitoringLine">

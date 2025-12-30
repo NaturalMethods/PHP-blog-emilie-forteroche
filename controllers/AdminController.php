@@ -30,8 +30,34 @@ class AdminController
     {
         $this->checkIfUserIsConnected();
 
-        // On récupère les articles.
+        //TODO SANITIZE sort htmlspecialchars();
+        $action = Utils::request('sort', '');
+
+        $action = htmlspecialchars($action);
+
+        $headerButtonsData = [
+            'title'=> [ 'text'=>'','state'=>'titleDesc','link'=>'index.php?action=monitoring&sort=titleDesc'],
+            'views'=> [ 'text'=>'','state'=>'viewDesc','link'=>'index.php?action=monitoring&sort=viewDesc'],
+            'comments' => [ 'text'=>'','state'=>'comDesc','link'=>'index.php?action=monitoring&sort=comDesc'],
+            'date' => [ 'text'=>'','state'=>'dateDesc','link'=>'index.php?action=monitoring&sort=dateDesc']
+        ];
+
+        foreach ($headerButtonsData as &$button) {
+            if(substr($button['state'], 0,-4) == substr($action, 0, -4)) {
+
+                $button['link'] = 'index.php?action=monitoring&sort='.substr($action, 0, -4).'Asc';
+                $button['text'] ='Tri descendant';
+
+            }else if (substr($button['state'], 0,-4) == substr($action, 0, -3)) {
+
+                $button['link'] = 'index.php?action=monitoring&sort=' . substr($action, 0, -3) . 'Desc';
+                $button['text'] ='Tri ascendant';
+
+            }
+        }
+
         $articleManager = new ArticleManager();
+
         $articles = $articleManager->getAllArticles();
 
         $commentManager = new CommentManager();
@@ -39,10 +65,15 @@ class AdminController
 
         $articleManager->setAllArticlesNbrOfComments($articles, $nbrComments);
 
+        if ($action != '' && $action != null) {
+            $articles = $articleManager->getArticlesSortedBy($articles, $action);
+        }
+
         // On affiche la page de monitoring.
         $view = new View("Monitoring");
         $view->render("monitoring", [
-            'articles' => $articles
+            'articles' => $articles,
+            'headerButtons' => $headerButtonsData
         ]);
     }
 

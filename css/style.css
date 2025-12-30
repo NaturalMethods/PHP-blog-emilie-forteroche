@@ -347,6 +347,16 @@ a.info {
     align-items: center;
     justify-content: center;
 }
+
+.articleTitleHeader{
+    padding: 5px 10px;
+    font-weight: bold;
+    color: white;
+    background-color: var(--commentColor);
+    border: none;
+
+}
+
 .submitMonitoring{
     margin-top: 10px;
     padding: 5px 10px;
