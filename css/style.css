@@ -21,6 +21,9 @@
     --quoteColor: #c5cbe4;
     --commentPaleColor: #99a140;
     --commentColor: #255E33;
+    --arrayHeader: #6B8E23;
+    --oddColor: #B0B87F;
+    --evenColor: #99a140;
 }
 
 /**
@@ -313,8 +316,49 @@ a.info {
     color: white;
 }
 
+.adminArticleMonitoring {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    background-color: var(--commentPaleColor);
+    color: white;
+    width: 100%;
+}
+
+.articleMonitoringLine{
+    display: flex;
+}
+.articleMonitoringLine:first-child {
+    background-color: var(--arrayHeader);
+}
+
+.articleMonitoringLine:not(:first-child):nth-child(odd){
+    background-color: var(--oddColor);
+}
+
+.articleMonitoringLine:nth-child(even){
+    background-color: var(--evenColor);
+}
+
+.articleMonitoringCell{
+    flex: 1;
+    padding: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.submitMonitoring{
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-weight: bold;
+    color: white;
+    background-color: var(--commentColor);
+    border: none;
+
+}
+
 .articleLine {
-    display: flex; 
+    display: flex;
 }
 
 .articleLine div {

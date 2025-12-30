@@ -22,6 +22,30 @@ class CommentManager extends AbstractEntityManager
         return $comments;
     }
 
+    public function getCommentsCountForEachArticles() : array
+    {
+        $sql = "SELECT a.id, COUNT(c.id) AS nb_comments FROM article a LEFT JOIN comment c ON c.id_article = a.id GROUP BY a.id";
+        $result = $this->db->query($sql);
+        return $result->fetchAll();
+    }
+
+    public function setCommentsCountForEachArticles(array $articles, array $nbrOfComments) : void{
+
+        foreach ($articles as $article){
+
+            foreach ($nbrOfComments as $comment){
+
+                if($article->getId() == $comment->getId()){
+                    $article->setNbComments($comment->getNbComments());
+
+                }
+
+            }
+
+        }
+
+    }
+
     /**
      * Récupère un commentaire par son id.
      * @param int $id : l'id du commentaire.

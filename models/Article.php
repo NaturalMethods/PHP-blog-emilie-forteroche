@@ -14,6 +14,8 @@
 
     private int $nbrOfView = 0;
 
+    private int $nbrOfComments = 0;
+
     /**
      * Setter pour l'id de l'utilisateur. 
      * @param int $idUser
@@ -138,4 +140,15 @@
     public function getNbrOfView() : int{
         return $this->nbrOfView;
     }
+
+    public function setNbrOfComments(int $nbrOfComments) : void
+    {
+        $this->nbrOfComments = $nbrOfComments;
+    }
+
+    public function getNbrOfComments() : int
+    {
+        return $this->nbrOfComments;
+    }
+
  }
