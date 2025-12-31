@@ -29,23 +29,6 @@ class CommentManager extends AbstractEntityManager
         return $result->fetchAll();
     }
 
-    public function setCommentsCountForEachArticles(array $articles, array $nbrOfComments) : void{
-
-        foreach ($articles as $article){
-
-            foreach ($nbrOfComments as $comment){
-
-                if($article->getId() == $comment->getId()){
-                    $article->setNbComments($comment->getNbComments());
-
-                }
-
-            }
-
-        }
-
-    }
-
     /**
      * Récupère un commentaire par son id.
      * @param int $id : l'id du commentaire.

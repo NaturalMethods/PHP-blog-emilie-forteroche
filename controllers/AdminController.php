@@ -168,10 +168,14 @@ class AdminController
             $article = new Article();
         }
 
+        $commentManager = new CommentManager();
+        $comments = $commentManager->getAllCommentsByArticleId($article->getId());
+
         // On affiche la page de modification de l'article.
         $view = new View("Edition d'un article");
         $view->render("updateArticleForm", [
-            'article' => $article
+            'article' => $article,
+            'comments' => $comments
         ]);
     }
 
@@ -227,5 +231,26 @@ class AdminController
 
         // On redirige vers la page d'administration.
         Utils::redirect("admin");
+    }
+
+    public function deleteComment(): void{
+
+        $this->checkIfUserIsConnected();
+
+        $id = Utils::request("id", -1);
+        $comid = Utils::request("comid", -1);
+
+        // On supprime l'article.
+        $articleManager = new ArticleManager();
+
+        if($comid >= 0) {
+            $commentManager = new CommentManager();
+            $comment = $commentManager->getCommentById($comid);
+            $commentManager->deleteComment($comment);
+        }
+
+        // On redirige vers la page d'administration.
+        Utils::redirect("showUpdateArticleForm", ["id" => $id]);
+
     }
 }
