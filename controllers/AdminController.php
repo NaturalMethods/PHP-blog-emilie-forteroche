@@ -26,54 +26,41 @@ class AdminController
         ]);
     }
 
+    /**
+     * Affiche la page de monitoring
+     * @return void
+     */
     public function showMonitoring(): void
     {
         $this->checkIfUserIsConnected();
 
-        //TODO SANITIZE sort htmlspecialchars();
-        $action = Utils::request('sort', '');
+        // On récupère le paramètre de tri
+        $sort = Utils::request('sort', '');
 
-        $action = htmlspecialchars($action);
+        // On met à jour le bouton d'en-tête concerné par le tri
+        $headerButtons = new HeaderButtons();
+        $headerButtonsValues = $headerButtons->updateSortedColumnHeaderButton($sort);
 
-        $headerButtonsData = [
-            'title'=> [ 'text'=>'','state'=>'titleDesc','link'=>'index.php?action=monitoring&sort=titleDesc'],
-            'views'=> [ 'text'=>'','state'=>'viewDesc','link'=>'index.php?action=monitoring&sort=viewDesc'],
-            'comments' => [ 'text'=>'','state'=>'comDesc','link'=>'index.php?action=monitoring&sort=comDesc'],
-            'date' => [ 'text'=>'','state'=>'dateDesc','link'=>'index.php?action=monitoring&sort=dateDesc']
-        ];
-
-        foreach ($headerButtonsData as &$button) {
-            if(substr($button['state'], 0,-4) == substr($action, 0, -4)) {
-
-                $button['link'] = 'index.php?action=monitoring&sort='.substr($action, 0, -4).'Asc';
-                $button['text'] ='Tri descendant';
-
-            }else if (substr($button['state'], 0,-4) == substr($action, 0, -3)) {
-
-                $button['link'] = 'index.php?action=monitoring&sort=' . substr($action, 0, -3) . 'Desc';
-                $button['text'] ='Tri ascendant';
-
-            }
-        }
-
+        // On récupère tous les articles
         $articleManager = new ArticleManager();
-
         $articles = $articleManager->getAllArticles();
 
+        // On récupère le nombre de commentaires pour tout les articles
         $commentManager = new CommentManager();
         $nbrComments = $commentManager->getCommentsCountForEachArticles();
 
         $articleManager->setAllArticlesNbrOfComments($articles, $nbrComments);
 
-        if ($action != '' && $action != null) {
-            $articles = $articleManager->getArticlesSortedBy($articles, $action);
+        // On tri selon $sort si non-vide
+        if ($sort != '' && $sort != null) {
+            $articles = $articleManager->getArticlesSortedBy($articles, $sort);
         }
 
         // On affiche la page de monitoring.
         $view = new View("Monitoring");
         $view->render("monitoring", [
             'articles' => $articles,
-            'headerButtons' => $headerButtonsData
+            'headerButtons' => $headerButtonsValues
         ]);
     }
 
@@ -233,23 +220,25 @@ class AdminController
         Utils::redirect("admin");
     }
 
-    public function deleteComment(): void{
+    /**
+     * Suppression d'un commentaire
+     * @return void
+     */
+    public function deleteComment(): void
+    {
 
         $this->checkIfUserIsConnected();
 
         $id = Utils::request("id", -1);
         $comid = Utils::request("comid", -1);
 
-        // On supprime l'article.
-        $articleManager = new ArticleManager();
-
-        if($comid >= 0) {
+        if ($comid >= 0) {
             $commentManager = new CommentManager();
             $comment = $commentManager->getCommentById($comid);
             $commentManager->deleteComment($comment);
         }
 
-        // On redirige vers la page d'administration.
+        // On redirige vers la page de modification de l'article.
         Utils::redirect("showUpdateArticleForm", ["id" => $id]);
 
     }

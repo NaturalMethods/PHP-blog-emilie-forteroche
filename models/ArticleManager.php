@@ -21,9 +21,14 @@ class ArticleManager extends AbstractEntityManager
         return $articles;
     }
 
+    /**
+     * Tri les articles passé en paramètres en fonction de l'action (titleDesc...)
+     * @param array $articles
+     * @param string $action
+     * @return mixed
+     */
     public function getArticlesSortedBy(array $articles, string $action): mixed
     {
-
         switch (true) {
             case preg_match('/^title(asc|desc)$/i', $action, $matches):
                 return $this->sortAlphabeticallyBy($articles, 'getTitle', $matches[1]);
@@ -42,6 +47,13 @@ class ArticleManager extends AbstractEntityManager
         }
     }
 
+    /**
+     * Tri les articles par ordre alphabetique descendant ou ascendant ($order)
+     * @param array $articles
+     * @param string $getter
+     * @param $order
+     * @return array
+     */
     public function sortAlphabeticallyBy(array $articles, string $getter, $order): array
     {
         usort($articles, function ($a, $b) use ($getter, $order) {
@@ -53,6 +65,13 @@ class ArticleManager extends AbstractEntityManager
         return $articles;
     }
 
+    /**
+     * Tri les articles numeriquement descendant ou ascendant ($order), fonctionne aussi pour les dates
+     * @param array $articles
+     * @param string $getter
+     * @param $order
+     * @return array
+     */
     public function sortNumericallyBy(array $articles, string $getter, $order): array
     {
         usort($articles, function ($a, $b) use ($getter, $order) {
@@ -137,6 +156,12 @@ class ArticleManager extends AbstractEntityManager
         $this->db->query($sql, ['id' => $id]);
     }
 
+    /**
+     * Définit le nombre de commentaires par articles en fonction de leur id
+     * @param array $articles
+     * @param array $nbrComments
+     * @return void
+     */
     public function setAllArticlesNbrOfComments(array $articles, array $nbrComments): void
     {
         foreach ($articles as $article) {
