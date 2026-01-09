@@ -6,10 +6,10 @@
 class HeaderButtons
 {
     private array $headerButtonsValues = [
-        'title' => ['text' => '', 'state' => 'titleDesc', 'link' => 'index.php?action=monitoring&sort=titleDesc'],
-        'views' => ['text' => '', 'state' => 'viewDesc', 'link' => 'index.php?action=monitoring&sort=viewDesc'],
-        'comments' => ['text' => '', 'state' => 'comDesc', 'link' => 'index.php?action=monitoring&sort=comDesc'],
-        'date' => ['text' => '', 'state' => 'dateDesc', 'link' => 'index.php?action=monitoring&sort=dateDesc']
+        'title' => ['text' => '', 'shortname' => 'tit', 'link' => 'index.php?action=monitoring&sort=titDes'],
+        'views' => ['text' => '', 'shortname' => 'vie', 'link' => 'index.php?action=monitoring&sort=vieDes'],
+        'comments' => ['text' => '', 'shortname' => 'com', 'link' => 'index.php?action=monitoring&sort=comDes'],
+        'date' => ['text' => '', 'shortname' => 'dat', 'link' => 'index.php?action=monitoring&sort=datDes']
     ];
 
     /**
@@ -36,40 +36,87 @@ class HeaderButtons
      * @param $sort
      * @return array[]
      */
-    public function updateSortedColumnHeaderButton($sort): array
+    public function updateSortedColumnHeaderButton(string $sort): array
     {
-
         foreach ($this->headerButtonsValues as &$button) {
-            if ($this->isDescendingSortButton($button, $sort)) {
-                $button = $this->setButtonToDescOrder($button, $sort);
 
-            } else if ($this->isAscendingSortButton($button, $sort)) {
-                $button = $this->setButtonToAscOrder($button, $sort);
+            $sortedColumn = $this->getShortNameFromParameter($sort);
+            $typeOfSort = $this->getSortFromParameter($sort);
+
+            if ($this->isButtonTheSortedColumn($button, $sortedColumn)) {
+                $button = $this->setButtonSortDatas($typeOfSort, $button);
             }
         }
         return $this->headerButtonsValues;
     }
 
     /**
-     * Retourne vraie si l'état du bouton correspond au paramètre sort de l'url pour un tri descendant (titleDesc, viewDesc...)
+     * Retourne le bouton avec les bonnes informations de tri (ascendant| descendant)
+     * @param String $typeOfSort
      * @param array $button
-     * @param string $sort
-     * @return bool
+     * @return array
      */
-    public function isDescendingSortButton(array $button, string $sort): bool
+    public function setButtonSortDatas(String $typeOfSort, array $button): array
     {
-        return substr($button['state'], 0, -4) == substr($sort, 0, -4);
+        if ($this->isDescendingSort($typeOfSort))
+            return $this->setButtonToDescOrder($button);
+
+        else if ($this->isAscendingSort($typeOfSort))
+            return $this->setButtonToAscOrder($button);
+
+        return $button;
+
     }
 
     /**
-     *  Retourne vraie si l'état du bouton correspond au paramètre sort de l'url pour un tri ascendant (titleAsc, viewAsc...)
-     * @param array $button
+     * Retourne le shortname contenu dans le paramètre sort
      * @param string $sort
+     * @return string
+     */
+    public function getShortNameFromParameter(string $sort): string
+    {
+        return substr($sort, 0, -3);
+    }
+
+    /**
+     * Retourne le sens du tri contenu dans le paramètre sort
+     * @param string $sort
+     * @return string
+     */
+    public function getSortFromParameter(string $sort): string
+    {
+        return substr($sort, 3);
+    }
+
+    /**
+     *  Retourne vraie si le nom raccourci du bouton est égal à celui du paramètre sort
+     * @param array $button
+     * @param string $sortedColumn
      * @return bool
      */
-    public function isAscendingSortButton(array $button, string $sort): bool
+    public function isButtonTheSortedColumn(array $button ,string $sortedColumn): bool
     {
-        return substr($button['state'], 0, -4) == substr($sort, 0, -3);
+        return strcasecmp($button['shortname'], $sortedColumn) === 0;
+    }
+
+    /**
+     * Retourne vraie si le type de tri est descendant
+     * @param string $typeOfSort
+     * @return bool
+     */
+    public function isDescendingSort(string $typeOfSort): bool
+    {
+        return strcasecmp($typeOfSort, "Des") === 0;
+    }
+
+    /**
+     *  Retourne vraie si le type de tri est ascendant
+     * @param string $typeOfSort
+     * @return bool
+     */
+    public function isAscendingSort(string $typeOfSort): bool
+    {
+        return strcasecmp($typeOfSort, "Asc") === 0;
     }
 
     /**
@@ -78,10 +125,10 @@ class HeaderButtons
      * @param string $sort
      * @return array
      */
-    public function setButtonToDescOrder(array $button, string $sort): array
+    public function setButtonToDescOrder(array $button): array
     {
-        $button['link'] = 'index.php?action=monitoring&sort=' . substr($sort, 0, -4) . 'Asc';
-        $button['text'] = 'Tri descendant';
+        $button['link'] = 'index.php?action=monitoring&sort=' . $button['shortname'] . 'Asc';
+        $button['text'] = '▼';
 
         return $button;
     }
@@ -92,10 +139,10 @@ class HeaderButtons
      * @param string $sort
      * @return array
      */
-    public function setButtonToAscOrder(array $button, string $sort): array
+    public function setButtonToAscOrder(array $button): array
     {
-        $button['link'] = 'index.php?action=monitoring&sort=' . substr($sort, 0, -3) . 'Desc';
-        $button['text'] = 'Tri ascendant';
+        $button['link'] = 'index.php?action=monitoring&sort=' . $button['shortname'] . 'Des';
+        $button['text'] = '▲';
 
         return $button;
     }

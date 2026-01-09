@@ -5,7 +5,6 @@
 
 class AdminController
 {
-
     /**
      * Affiche la page d'administration.
      * @return void

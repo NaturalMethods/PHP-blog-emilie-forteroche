@@ -8,8 +8,6 @@
 
 <a class="submit" href="index.php?action=admin">Retour</a>
 
-<h4>Cliquez sur une entête de colonne pour la trier</h4>
-
 <div class="adminArticleMonitoring">
     <div class="articleMonitoringLine">
         <a class="articleMonitoringCell articleTitleHeader" href="<?= $headerButtons['title']['link']; ?>" >Titre de l'article <h6><?= $headerButtons['title']['text']; ?></h6></a>

@@ -30,16 +30,16 @@ class ArticleManager extends AbstractEntityManager
     public function getArticlesSortedBy(array $articles, string $action): mixed
     {
         switch (true) {
-            case preg_match('/^title(asc|desc)$/i', $action, $matches):
+            case preg_match('/^tit(asc|des)$/i', $action, $matches):
                 return $this->sortAlphabeticallyBy($articles, 'getTitle', $matches[1]);
 
-            case preg_match('/^view(asc|desc)$/i', $action, $matches):
+            case preg_match('/^vie(asc|des)$/i', $action, $matches):
                 return $this->sortNumericallyBy($articles, 'getNbrOfView', $matches[1]);
 
-            case preg_match('/^com(asc|desc)$/i', $action, $matches):
+            case preg_match('/^com(asc|des)$/i', $action, $matches):
                 return $this->sortNumericallyBy($articles, 'getNbrOfComments', $matches[1]);
 
-            case preg_match('/^date(asc|desc)$/i', $action, $matches):
+            case preg_match('/^dat(asc|des)$/i', $action, $matches):
                 return $this->sortNumericallyBy($articles, 'getDateCreation', $matches[1]);
 
             default:
@@ -57,7 +57,7 @@ class ArticleManager extends AbstractEntityManager
     public function sortAlphabeticallyBy(array $articles, string $getter, $order): array
     {
         usort($articles, function ($a, $b) use ($getter, $order) {
-            if (!strcasecmp($order, 'Desc'))
+            if (!strcasecmp($order, 'Des'))
                 return strcasecmp($b->$getter(), $a->$getter());
             else
                 return strcasecmp($a->$getter(), $b->$getter());
@@ -75,7 +75,7 @@ class ArticleManager extends AbstractEntityManager
     public function sortNumericallyBy(array $articles, string $getter, $order): array
     {
         usort($articles, function ($a, $b) use ($getter, $order) {
-            if (!strcasecmp($order, 'Desc'))
+            if (!strcasecmp($order, 'Des'))
                 return $b->$getter() <=> $a->$getter();
             else
                 return $a->$getter() <=> $b->$getter();
